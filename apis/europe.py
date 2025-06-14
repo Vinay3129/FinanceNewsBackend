@@ -20,7 +20,14 @@ def filter_articles(articles):
             filtered.append(article)
     return filtered[:10]
 
-@europe_bp.route('/news')
+@europe_bp.route('/', methods=['GET'])
+def europe_root():
+    return jsonify({"message": "Use /api/europe/news to get the latest European finance news."})
+
+@europe_bp.route('/news', methods=['GET'])
+def get_europe_news_route():
+    return get_europe_news()
+
 def get_europe_news():
     try:
         url = f"https://newsdata.io/api/1/news?apikey={NEWSDATA_API_KEY}&country=de,fr,gb,it,es,nl,se,ch,no&category=business&language={LANGUAGE}"

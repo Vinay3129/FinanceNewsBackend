@@ -22,7 +22,15 @@ def filter_articles(articles):
             filtered.append(article)
     return filtered[:10]
 
-@us_bp.route('/news')
+@us_bp.route('/', methods=['GET'])
+def us_root():
+    return jsonify({"message": "Use /api/us/news to get the latest US finance news."})
+
+@us_bp.route('/news', methods=['GET'])
+def get_us_news_route():
+    return get_us_news()
+
+
 def get_us_news():
     # ✅ NewsData.io
     url = f"https://newsdata.io/api/1/news?apikey={NEWSDATA_API_KEY}&country=us&category=business&language={LANGUAGE}"

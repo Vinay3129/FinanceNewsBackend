@@ -27,6 +27,10 @@ def filter_articles(articles):
     return filtered[:10]
 
 @india_bp.route('/news')
+@india_bp.route('/', methods=['GET'])  # This listens to /api/india/
+def india_root():
+    return jsonify({"message": "Use /api/india/news to get the latest India finance news."})
+
 def get_india_news():
     # ✅ NewsData.io (Primary)
     url = f"https://newsdata.io/api/1/news?apikey={NEWSDATA_API_KEY}&country=in&category=business&language={LANGUAGE}"

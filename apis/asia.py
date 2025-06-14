@@ -20,7 +20,14 @@ def filter_articles(articles):
             filtered.append(article)
     return filtered[:10]
 
-@asia_bp.route('/news')
+@asia_bp.route('/', methods=['GET'])
+def asia_root():
+    return jsonify({"message": "Use /api/asia/news to get the latest Asia finance news."})
+
+@asia_bp.route('/news', methods=['GET'])
+def get_asia_news_route():
+    return get_asia_news()
+
 def get_asia_news():
     try:
         url = f"https://newsdata.io/api/1/news?apikey={NEWSDATA_API_KEY}&country=in,jp,cn,sg,kr&category=business&language={LANGUAGE}"

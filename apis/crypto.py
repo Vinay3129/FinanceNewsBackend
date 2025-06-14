@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify
 
 crypto_bp = Blueprint('crypto_news', __name__)
 
+
 NEWSDATA_API_KEY = 'pub_f1b94a0af239455b9d6b8c8197720de0'
 GNEWS_API_KEY = 'c22aa4e5b3154001c857762ecd73d7ff'
 NEWSAPI_KEY = 'abcdaac9869847b9aeea09a320ae6c61'
@@ -22,7 +23,14 @@ def filter_articles(articles):
             filtered.append(article)
     return filtered[:10]
 
-@crypto_bp.route('/news')
+@crypto_bp.route('/', methods=['GET'])
+def crypto_root():
+    return jsonify({"message": "Use /api/crypto/news to get the latest crypto news."})
+
+@crypto_bp.route('/news', methods=['GET'])
+def get_crypto_news_route():
+    return get_crypto_news()
+
 def get_crypto_news():
     try:
         url = f"https://newsdata.io/api/1/news?apikey={NEWSDATA_API_KEY}&q=crypto&language={LANGUAGE}"
