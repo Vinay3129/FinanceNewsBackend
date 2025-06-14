@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>India News Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .article {
+      border: 1px solid #ddd;
+      background: #fff;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .article h3 {
+      margin: 0;
+      color: #007bff;
+    }
+    .article p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🇮🇳 Latest India Finance News</h1>
+  <div id="news-container">Loading...</div>
+
+  <script>
+    fetch("http://127.0.0.1:5000/api/india/news")
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("news-container");
+        container.innerHTML = "";
+
+        if (data.articles && data.articles.length > 0) {
+          data.articles.forEach(article => {
+            const div = document.createElement("div");
+            div.className = "article";
+            div.innerHTML = `
+              <h3>${article.title}</h3>
+              <p>${article.description || ""}</p>
+              <p><a href="${article.link || article.url}" target="_blank">Read more</a></p>
+            `;
+            container.appendChild(div);
+          });
+        } else {
+          container.innerHTML = "No news found.";
+        }
+      })
+      .catch(err => {
+        document.getElementById("news-container").innerText =
+          "Error fetching news: " + err;
+      });
+  </script>
+</body>
+</html>
