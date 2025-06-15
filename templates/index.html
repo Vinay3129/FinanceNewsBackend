@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finance Space</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+    }
+
+    header {
+      background-color: #004080;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+    }
+
+    header h1 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin: 1.5rem 0 1rem;
+      padding-left: 2rem;
+      color: #333;
+    }
+
+    .news-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 0 2rem 2rem;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .news-card h3 {
+      font-size: 1.1rem;
+      color: #004080;
+    }
+
+    .news-card a {
+      text-decoration: none;
+      color: #004080;
+    }
+
+    .news-card a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #004080;
+      color: white;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      nav a {
+        margin-left: 0;
+        margin-right: 1rem;
+      }
+
+      main {
+        padding: 1rem;
+      }
+
+      .news-card {
+        font-size: 0.9rem;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><a href="#" onclick="location.reload();">Finance Space</a></h1>
+    <nav>
+      <a href="#india">India</a>
+      <a href="#us">US</a>
+      <a href="#asia">Asia</a>
+      <a href="#europe">Europe</a>
+      <a href="#crypto">Crypto</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="top">
+      <h2 class="section-title">Top Financial Headlines</h2>
+      <div class="news-container" id="news"></div>
+    </section>
+
+    <section id="india">
+      <h2 class="section-title">🇮🇳 India News</h2>
+      <div class="news-container" id="news-india"></div>
+    </section>
+
+    <section id="us">
+      <h2 class="section-title">🇺🇸 US News</h2>
+      <div class="news-container" id="news-us"></div>
+    </section>
+
+    <section id="asia">
+      <h2 class="section-title">🌏 Asia News</h2>
+      <div class="news-container" id="news-asia"></div>
+    </section>
+
+    <section id="europe">
+      <h2 class="section-title">🇪🇺 Europe News</h2>
+      <div class="news-container" id="news-europe"></div>
+    </section>
+
+    <section id="crypto">
+      <h2 class="section-title">💰 Crypto News</h2>
+      <div class="news-container" id="news-crypto"></div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Finance Space - Built with ❤️ using GitHub Pages
+  </footer>
+
+  <script>
+    const SECTIONS = {
+      "news": "/api/top/news",
+      "news-india": "/api/india/news",
+      "news-us": "/api/us/news",
+      "news-asia": "/api/asia/news",
+      "news-europe": "/api/europe/news",
+      "news-crypto": "/api/crypto/news",
+    };
+
+    function displayNews(id, articles) {
+      const container = document.getElementById(id);
+      container.innerHTML = "";
+      if (!articles || articles.length === 0) {
+        container.innerHTML = "<p>No news available at this time.</p>";
+        return;
+      }
+      articles.forEach(article => {
+        const link = article.url || article.link;
+        const title = article.title || "Untitled";
+        const date = article.pubDate || article.publishedAt || new Date().toISOString();
+        const card = document.createElement("div");
+        card.className = "news-card";
+        card.innerHTML = `
+          <h3><a href="${link}" target="_blank">${title}</a></h3>
+          <p>${new Date(date).toLocaleString()}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    Object.entries(SECTIONS).forEach(([id, endpoint]) => {
+      const container = document.getElementById(id);
+      container.innerHTML = "<p>Loading...</p>";
+      fetch(`http://127.0.0.1:5000${endpoint}`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.articles) displayNews(id, json.articles);
+          else container.innerHTML = "<p>Error loading news.</p>";
+        })
+        .catch(err => {
+          console.error(err);
+          container.innerHTML = `<p>Error: ${err.message}</p>`;
+        });
+    });
+  </script>
+
+</body>
+</html>

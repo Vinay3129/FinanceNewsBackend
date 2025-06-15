@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from apis.top import top_bp
 from apis.india import india_bp
 from apis.us import us_bp
 from apis.asia import asia_bp
@@ -11,6 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Register blueprints
+app.register_blueprint(top_bp, url_prefix='/api/top')
 app.register_blueprint(india_bp, url_prefix='/api/india')
 app.register_blueprint(us_bp, url_prefix='/api/us')
 app.register_blueprint(asia_bp, url_prefix='/api/asia')
